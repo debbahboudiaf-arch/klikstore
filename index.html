@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Klik Store</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0E1029; --ink2:#171A3D; --paper:#F5F6FB; --card:#FFFFFF;
+    --accent:#7C5CFF; --accent2:#2FE6C9; --line:#E4E5F0; --muted:#6B6E85; --text:#171A3D;
+    padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){ --paper:#0E1029; --card:#171A3D; --line:#2A2D57; --text:#F0F1FA; --muted:#9A9DBE; }
+  }
+  :root[data-theme="dark"]{ --paper:#0E1029; --card:#171A3D; --line:#2A2D57; --text:#F0F1FA; --muted:#9A9DBE; }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth; scroll-padding-top:70px;}
+  body{background:var(--paper); color:var(--text); font-family:'Tajawal',sans-serif; line-height:1.6;}
+  a{color:inherit; text-decoration:none;}
+  section{padding:70px 20px; max-width:1080px; margin:0 auto;}
+  .eyebrow{color:var(--accent); font-weight:700; font-size:14px; margin-bottom:8px;}
+
+  header{
+    position:sticky; top:0; z-index:20;
+    background:linear-gradient(120deg,#6A3DFF,#FF3FB0,#FF8A3D,#2FE6C9);
+    background-size:300% 300%; animation:drift 10s ease infinite;
+    border-bottom:1px solid rgba(255,255,255,.15); padding:env(safe-area-inset-top,0px) 20px 0;
+    box-shadow:0 6px 24px rgba(70,20,120,.18);
+  }
+  .nav{max-width:1080px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; height:76px; position:relative;}
+  .logoWrap{position:absolute; left:50%; transform:translateX(-50%); top:0; height:76px; display:flex; align-items:center;}
+  .logo{height:52px; width:auto; display:block; animation:logoBob 2.6s ease-in-out infinite; transition:transform .3s ease;}
+  .logo:hover{ transform:scale(1.08) rotate(-2deg); }
+  @keyframes logoBob{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-4px);} }
+  nav.links{display:flex; gap:26px; font-weight:700; font-size:15px;}
+  nav.links a{color:#fff;}
+  .navBtn{display:none; font-size:26px; background:none; border:none; color:#fff; cursor:pointer; z-index:2;}
+  @media (max-width:680px){
+    nav.links{
+      display:none; position:absolute; inset-inline:0; top:76px;
+      background:linear-gradient(120deg,#6A3DFF,#FF3FB0,#FF8A3D);
+      flex-direction:column; padding:16px 20px; border-bottom:1px solid rgba(255,255,255,.2); gap:16px;
+    }
+    nav.links.open{display:flex;}
+    .navBtn{display:block;}
+  }
+
+  .hero{text-align:center; padding-top:90px; padding-bottom:60px;}
+  .hero .eyebrow, .hero h1, .hero p, .hero .cta{animation:floatUp .7s ease both;}
+  .hero h1{animation-delay:.1s;}
+  .hero p{animation-delay:.2s;}
+  .hero .cta{animation-delay:.3s;}
+  .hero h1{font-size:clamp(32px,7vw,54px); font-weight:900; line-height:1.15; margin-bottom:16px;}
+  .hero h1 span{
+    background:linear-gradient(90deg,var(--accent),#FF8A3D,var(--accent2),var(--accent));
+    background-size:300% auto; -webkit-background-clip:text; background-clip:text; color:transparent;
+    animation:drift 6s ease infinite;
+  }
+  .hero p{color:var(--muted); font-size:17px; max-width:480px; margin:0 auto 28px;}
+  .cta{
+    display:inline-block; background:var(--accent); color:#fff; font-weight:800; font-size:16px;
+    padding:15px 32px; border-radius:999px; transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .cta:hover{ transform:translateY(-3px); box-shadow:0 12px 24px rgba(124,92,255,.35); }
+  .cta.outline{background:transparent; border:2px solid var(--line); color:var(--text); margin-inline-start:10px;}
+  .cta.outline:hover{ box-shadow:none; border-color:var(--accent); }
+
+  @keyframes floatUp{ from{opacity:0; transform:translateY(24px);} to{opacity:1; transform:translateY(0);} }
+  @keyframes drift{ 0%,100%{background-position:0% 50%;} 50%{background-position:100% 50%;} }
+
+  .reveal{opacity:0; transform:translateY(24px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+  .reveal.stagger .grid > *{opacity:0; transform:translateY(20px);}
+  .reveal.stagger.in .grid > *{animation:floatUp .6s ease both;}
+  .reveal.stagger.in .grid > *:nth-child(1){animation-delay:.05s;}
+  .reveal.stagger.in .grid > *:nth-child(2){animation-delay:.15s;}
+  .reveal.stagger.in .grid > *:nth-child(3){animation-delay:.25s;}
+  .reveal.stagger.in .grid > *:nth-child(4){animation-delay:.35s;}
+
+  h2.h2{font-size:28px; font-weight:900; margin-bottom:6px;}
+  .sub{color:var(--muted); margin-bottom:32px; font-size:15px;}
+
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px;}
+  .pcard{
+    background:var(--card); border:1px solid var(--line); border-radius:20px; padding:16px; text-align:center;
+    transition:transform .35s ease, box-shadow .35s ease;
+  }
+  .pcard:hover{ transform:translateY(-8px); box-shadow:0 18px 34px rgba(20,20,60,.12); }
+  .pcard .thumb{
+    aspect-ratio:1/1; border-radius:14px; margin-bottom:14px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:flex; align-items:center; justify-content:center; font-size:38px;
+  }
+  .pcard h3{font-size:16px; font-weight:800; margin-bottom:4px;}
+  .pcard .price{color:var(--accent); font-weight:800;}
+
+  .about{display:flex; gap:40px; flex-wrap:wrap; align-items:center;}
+  .about .block{flex:1; min-width:260px;}
+  .about p{color:var(--muted); margin-bottom:14px;}
+  .stats{display:flex; gap:28px; margin-top:20px;}
+  .stats div b{display:block; font-size:24px; font-weight:900; color:var(--accent);}
+  .stats div span{color:var(--muted); font-size:13px;}
+
+  .contact{
+    background:var(--ink); color:#fff; border-radius:28px; text-align:center; padding:56px 24px;
+  }
+  .contact h2{color:#fff;}
+  .contact p{color:#C7C9E8; margin-bottom:24px;}
+  .contact .cta{background:var(--accent2); color:var(--ink);}
+
+  /* ===== نموذج الطلب ===== */
+  .orderCard{
+    background:var(--card); border:1px solid var(--line); border-radius:22px; padding:24px; max-width:460px; margin:0 auto;
+  }
+  .orderProduct{display:flex; gap:14px; align-items:center; margin-bottom:20px; padding-bottom:18px; border-bottom:1px solid var(--line);}
+  .orderProduct .thumb{width:56px; height:56px; border-radius:14px; flex:none;
+    background:linear-gradient(135deg,var(--accent),var(--accent2)); display:flex; align-items:center; justify-content:center; font-size:26px;}
+  .orderProduct h3{font-size:16px; font-weight:800; margin-bottom:2px;}
+  .orderProduct .price{color:var(--accent); font-weight:800; font-size:15px;}
+  .field{margin-bottom:14px; text-align:right;}
+  .field label{display:block; font-size:13.5px; font-weight:700; margin-bottom:6px;}
+  .field input, .field select{
+    width:100%; padding:12px 14px; border-radius:14px; border:1.5px solid var(--line);
+    background:var(--paper); color:var(--text); font-family:inherit; font-size:15px; outline:none;
+  }
+  .field input:disabled, .field select:disabled{opacity:.5;}
+  .qtyRow{display:flex; align-items:center; gap:10px;}
+  .qtyRow button{width:38px; height:38px; border-radius:12px; border:1.5px solid var(--line); background:var(--paper); color:var(--text); font-size:18px; font-weight:800; cursor:pointer;}
+  .qtyRow span{min-width:24px; text-align:center; font-weight:800;}
+  .btnFull{
+    display:block; width:100%; text-align:center; padding:15px; border-radius:16px; border:none;
+    font-family:inherit; font-size:16px; font-weight:800; cursor:pointer; background:var(--accent); color:#fff;
+  }
+  .btnGhost{background:transparent; color:var(--muted); border:1.5px solid var(--line); margin-top:10px;}
+  .sumRow{display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px dashed var(--line); font-size:14.5px;}
+  .sumRow .k{color:var(--muted);}
+  .sumRow .v{font-weight:700;}
+  .sumTotal{display:flex; justify-content:space-between; margin-top:10px; padding-top:12px; border-top:2px solid var(--line); font-weight:800; font-size:17px;}
+  .sumTotal .v{color:var(--accent);}
+
+  footer{text-align:center; color:var(--muted); font-size:13px; padding:30px 20px;}
+  .hidden{display:none !important;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <div class="logoWrap"><img class="logo" src="data:image/png;base64,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" alt="Klik Store"></div>
+    <nav class="links" id="navLinks">
+      <a href="#home" onclick="closeNav()">الرئيسية</a>
+      <a href="#products" onclick="closeNav()">المنتجات</a>
+      <a href="#order" onclick="closeNav()">اطلب الآن</a>
+      <a href="#about" onclick="closeNav()">من نحن</a>
+      <a href="#contact" onclick="closeNav()">تواصل معنا</a>
+    </nav>
+    <button class="navBtn" id="navBtn" onclick="toggleNav()">☰</button>
+  </div>
+</header>
+
+<section id="home" class="hero">
+  <div class="eyebrow">مرحبًا بك في</div>
+  <h1>تسوّق بثقة، <span>كليك</span> وحدة ويوصلك</h1>
+  <p>Klik Store — منتجات مختارة بعناية وجودة موثوقة، مع توصيل لكل ولايات الجزائر ودفع عند الاستلام.</p>
+  <a href="#products" class="cta">شوف المنتجات</a>
+  <a href="#contact" class="cta outline">تواصل معنا</a>
+</section>
+
+<section id="products" class="reveal stagger">
+  <div class="eyebrow">المنتجات</div>
+  <h2 class="h2">تشكيلتنا</h2>
+  <p class="sub">عدّل هذا القسم بمنتجاتك الحقيقية (صور، أسماء، أسعار) وقت التخصيص</p>
+  <div class="grid" id="productsGrid"></div>
+</section>
+
+<section id="order" class="reveal">
+  <div class="eyebrow">الطلب</div>
+  <h2 class="h2">أكمل طلبيتك</h2>
+  <p class="sub">عبّي معلوماتك وراجع الطلبية قبل التأكيد</p>
+
+  <div class="orderCard">
+    <div class="orderProduct">
+      <div class="thumb" id="oThumb">🎧</div>
+      <div>
+        <h3 id="oName">منتج 1</h3>
+        <div class="price"><span id="oPrice">2,500</span> دج</div>
+      </div>
+    </div>
+
+    <div id="orderStep1">
+      <div class="field"><label>الاسم الكامل</label><input id="fName" type="text" placeholder="مثال: أحمد بن علي"></div>
+      <div class="field"><label>رقم الهاتف</label><input id="fPhone" type="tel" placeholder="0555 12 34 56" inputmode="numeric"></div>
+      <div class="field">
+        <label>الولاية</label>
+        <select id="fWilaya"><option value="">-- اختر الولاية --</option></select>
+      </div>
+      <div class="field">
+        <label>البلدية</label>
+        <select id="fCommune" disabled><option value="">اختر الولاية أولاً</option></select>
+      </div>
+      <div class="field"><label>العنوان بالتفصيل</label><input id="fAddress" type="text" placeholder="الحي، الشارع، رقم المنزل"></div>
+      <div class="field">
+        <label>الكمية</label>
+        <div class="qtyRow">
+          <button type="button" id="qtyMinus">−</button><span id="qtyVal">1</span><button type="button" id="qtyPlus">+</button>
+        </div>
+      </div>
+      <button class="btnFull" id="toConfirm">مراجعة الطلبية</button>
+    </div>
+
+    <div id="orderStep2" class="hidden">
+      <div class="sumRow"><span class="k">المنتج</span><span class="v" id="sProd"></span></div>
+      <div class="sumRow"><span class="k">الاسم</span><span class="v" id="sName"></span></div>
+      <div class="sumRow"><span class="k">الهاتف</span><span class="v" id="sPhone"></span></div>
+      <div class="sumRow"><span class="k">الولاية</span><span class="v" id="sWilaya"></span></div>
+      <div class="sumRow"><span class="k">البلدية</span><span class="v" id="sCommune"></span></div>
+      <div class="sumRow"><span class="k">العنوان</span><span class="v" id="sAddress"></span></div>
+      <div class="sumRow"><span class="k">الكمية</span><span class="v" id="sQty"></span></div>
+      <div class="sumTotal"><span>المجموع</span><span class="v"><span id="sTotal"></span> دج</span></div>
+      <button class="btnFull" id="sendWhatsapp" style="margin-top:16px;">✅ أكّد الطلبية عبر واتساب</button>
+      <button class="btnFull btnGhost" id="backEdit">تعديل المعلومات</button>
+    </div>
+  </div>
+</section>
+
+<section id="about" class="reveal">
+  <div class="about">
+    <div class="block">
+      <div class="eyebrow">من نحن</div>
+      <h2 class="h2">وراء Klik Store</h2>
+      <p>نختار كل منتج بعناية قبل ما نعرضه عليك، ونشتري بالجملة باش نضمنولك جودة أحسن وسعر عادل.</p>
+      <p>هدفنا نوصلك تجربة تسوق سهلة وموثوقة، من الطلب حتى التوصيل لباب دارك.</p>
+      <div class="stats">
+        <div><b>58</b><span>ولاية توصيل</span></div>
+        <div><b>100%</b><span>دفع عند الاستلام</span></div>
+      </div>
+    </div>
+    <div class="block">
+      <div class="pcard" style="text-align:center;">
+        <div class="thumb" style="aspect-ratio:4/3; font-size:52px;">🛍️</div>
+        <p style="margin:0; color:var(--muted); font-size:14px;">بدّل هذا الفراغ بصورة حقيقية لفريقك أو منتجاتك</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="reveal">
+  <div class="contact">
+    <h2 class="h2">عندك سؤال أو تحب تطلب؟</h2>
+    <p>راسلنا مباشرة على واتساب ونردولك في أقرب وقت</p>
+    <a class="cta" id="waLink" href="#" target="_blank">راسلنا على واتساب</a>
+  </div>
+</section>
+
+<footer>© Klik Store — جميع الحقوق محفوظة</footer>
+
+<script>
+// ===== عدّل هذا القسم =====
+const WHATSAPP_NUMBER = "213555000000"; // رقمك بصيغة دولية بدون + ولا أصفار زايدة
+document.getElementById('waLink').href = `https://wa.me/${WHATSAPP_NUMBER}`;
+
+const PRODUCTS = [
+  { name:"منتج 1", price:2500, icon:"🎧" },
+  { name:"منتج 2", price:3200, icon:"⌚" },
+  { name:"منتج 3", price:1800, icon:"💡" },
+  { name:"منتج 4", price:4500, icon:"📱" }
+];
+const grid = document.getElementById('productsGrid');
+PRODUCTS.forEach((p,i)=>{
+  const card = document.createElement('div');
+  card.className = 'pcard';
+  card.innerHTML = `<div class="thumb">${p.icon}</div><h3>${p.name}</h3><div class="price">${p.price.toLocaleString('en-US')} دج</div>
+    <button class="btnFull" style="margin-top:12px; padding:10px;" onclick="selectProduct(${i})">اطلب الآن</button>`;
+  grid.appendChild(card);
+});
+
+let currentProduct = 0;
+function selectProduct(i){
+  currentProduct = i;
+  const p = PRODUCTS[i];
+  document.getElementById('oThumb').textContent = p.icon;
+  document.getElementById('oName').textContent = p.name;
+  document.getElementById('oPrice').textContent = p.price.toLocaleString('en-US');
+  document.getElementById('order').scrollIntoView({behavior:'smooth'});
+}
+selectProduct(0);
+
+function toggleNav(){ document.getElementById('navLinks').classList.toggle('open'); }
+function closeNav(){ document.getElementById('navLinks').classList.remove('open'); }
+
+// ===== نموذج الطلب =====
+const WILAYAS = {
+"أدرار":["أدرار", "بودة", "فنوغيل", "إن زغمير", "أولاد أحمد تيمي", "رقان", "سالي", "سبع", "تامنطيت", "تامست", "تيت", "تسابيت", "زاوية كنتة", "أولف", "تيمقتن"],
+"الشلف":["الشلف", "تنس", "بنايرية", "الكريمية", "تاجنة", "تاوقريت", "بني حواء", "صبحة", "حرشون", "أولاد فارس", "سيدي عكاشة", "بوقادير", "بني راشد", "تلعصة", "الهرنفة", "وادي قوسين", "الظهرة", "أولاد عباس", "سيدي عبد الرحمن", "مصدق", "الحجاج", "عين مران", "أم الدروع", "بريرة", "أبو الحسن", "المرسى", "وادي سلي", "الأبيض مجاجة", "الزبوجة", "بوزغاية", "بني بوعتاب", "وادي الفضة", "سنجاس", "الشطية", "أولاد بن عبد القادر"],
+"الأغواط":["الأغواط", "قصر الحيران", "بن ناصر بن شهرة", "سيدي مخلوف", "حاسي الدلاعة", "حاسي الرمل", "عين ماضي", "تاجموت", "الخنق", "قلتة سيدي سعد", "عين سيدي علي", "بيضاء", "بريدة", "الغيشة", "الحاج مشري", "سبقاق", "تاويالة", "تاجرونة", "أفلو", "العسافية", "وادي مرة", "وادي مزي", "الشارف", "بوقايس"],
+"أم البواقي":["أم البواقي", "عين ببوش", "عين البيضاء", "عين ديس", "عين فكرون", "عين كرشة", "عين مليلة", "عين الزيتون", "بحير الشرقي", "بريش", "بئر الشهداء", "الضلعة", "العامرية", "البلالة", "الجازية", "الفجوج بوغرارة سعودي", "الحرملية", "فكيرينة", "هنشير تومغني", "قصر الصباحي", "مسكيانة", "وادي نيني", "أولاد قاسم", "أولاد حملة", "أولاد زواي", "الراحية", "سيقوس", "سوق نعمان", "زرق"],
+"باتنة":["باتنة", "غسيرة", "معافة", "مروانة", "سريانة", "منعة", "المعذر", "تازولت", "نقاوس", "قيقبة", "إينوغيسن", "عيون العصافير", "جرمة", "بيطام", "متكوك", "آريس", "كيمل", "تيلاطو", "عين جاسر", "أولاد سلام", "تيغرغار", "عين ياقوت", "فسديس", "سفيان", "رحبات", "تيغانمين", "لمسان", "قصر بلزمة", "سقانة", "إيشمول", "فم الطوب", "بني فضالة الحقانية", "وادي الماء", "تالخمت", "بوزينة", "الشمرة", "وادي الشعبة", "تاكسلانت", "القصبات", "أولاد عوف", "بومقر", "بريكة", "الجزار", "تكوت", "عين التوتة", "حيدوسة", "ثنية العابد", "وادي الطاقة", "أولاد فاضل", "تيمقاد", "رأس العيون", "شير", "أولاد سي سليمان", "زانة البيضاء", "مدوكال", "أولاد عمار", "الحاسي", "لازرو", "بومية", "بولهيلات", "لارباع"],
+"بجاية":["بجاية", "أميزور", "فرعون", "تاوريرت إغيل", "شلاطة", "تامقرة", "تيمزريت", "سوق الاثنين", "مسيسنة", "تينبدار", "تيشي", "سمعون", "كنديرة", "تيفرة", "إغرم", "أمالو", "إغيل علي", "إفلين إلماثن", "توجة", "درقينة", "سيدي عيش", "القصر", "بني جليل", "أدكار", "أقبو", "صدوق", "تازمالت", "آيت رزين", "شميني", "سوق أوفلة", "تاسكريوت", "تيبان", "تالا حمزة", "برباشة", "بني كسيلة", "أوزلاقن", "بوحمزة", "بني معوش", "بوجليل", "فناية إلماتن", "ليفلاي", "خراطة", "ذراع القايد", "تامريجت", "آيت سماعيل", "بوخليفة", "تيزي نبربر", "بني ملكيش", "وادي غير", "أوقاس", "ملبو", "أكفادو"],
+"بسكرة":["بسكرة", "أوماش", "برانيس", "الشتمة", "سيدي عقبة", "مشونش", "الحوش", "عين ناقة", "زريبة الوادي", "الفيض", "القنطرة", "عين الزعطوط", "الوطاية", "جمورة", "طولقة", "ليوة", "لشانة", "أورلال", "مليلي", "فوغالة", "برج بن عزوز", "مزيرعة", "بوشقرون", "المخادمة", "الغروس", "الحاجب", "خنقة سيدي ناجي"],
+"بشار":["بشار", "بوكايس", "عرق فراج", "القنادسة", "لحمر", "مريجة", "مشرع هواري بومدين", "موغل", "العبادلة", "بني ونيف", "تاغيت"],
+"البليدة":["البليدة", "الشبلي", "بوينان", "وادي العلايق", "أولاد يعيش", "الشريعة", "العفرون", "الشفة", "حمام ملوان", "بن خليل", "الصومعة", "موزاية", "صوحان", "مفتاح", "أولاد سلامة", "بوفاريك", "الأربعاء", "وادي جر", "بني تامو", "بوعرفة", "بني مراد", "بوقرة", "قرواو", "عين الرمانة", "جبابرة"],
+"البويرة":["البويرة", "الأسنام", "قرومة", "سوق الخميس", "القادرية", "حنيف", "ديرة", "آيت لعزيز", "تاغزوت", "الرواروة", "مزدور", "حيزر", "الأخضرية", "معلة", "الهاشمية", "عومر", "الشرفة", "برج أخريص", "العجيبة", "الحكيمية", "الخبوزية", "أهل القصر", "بودربالة", "زبربر", "عين الحجر", "جباحية", "أغبالو", "تاقديت", "عين تركي", "سحاريج", "الدشمية", "ريدان", "بشلول", "بوكرام", "عين بسام", "بئر غبالو", "مشدالة", "سور الغزلان", "المعمورة", "أولاد راشد", "عين لالوي", "حجرة زرقاء", "آث منصور", "المقراني", "وادي البردي"],
+"تمنراست":["تمنراست", "أباليسة", "إدلس", "تازروك", "إن أمقل"],
+"تبسة":["تبسة", "بئر العاتر", "الشريعة", "سطح قنتيس", "العوينات", "لحويجبات", "صفصاف الوسرى", "الحمامات", "نقرين", "بئر المقدم", "الكويف", "مرسط", "العقلة", "العقلة المالحة", "الماء الأبيض", "أم علي", "الونزة", "عين الزرقاء", "بكارية", "بوخضرة", "بئر الذهب", "فركان", "المزرعة", "بولحاف الدير", "قريقر", "بجن", "ثليجان"],
+"تلمسان":["تلمسان", "بني مستار", "عين تالوت", "الرمشي", "الفحول", "صبرة", "الغزوات", "سواني", "جبالة", "القور", "وادي الخير", "عين فزة", "أولاد ميمون", "عميور", "عين يوسف", "زناتة", "بني سنوس", "باب العسة", "دار يغمراسن", "فلاوسن", "أزايل", "سبعة شيوخ", "ترني بني هديل", "بن سكران", "عين نحالة", "الحناية", "مغنية", "حمام بوغرارة", "السواحلية", "مسيردة الفواقة", "عين فتاح", "العريشة", "سوق الثلاثاء", "سيدي العبدلي", "سبدو", "بني وارسوس", "سيدي مجاهد", "بني بوسعيد", "مرسى بن مهيدي", "ندرومة", "سيدي الجيلالي", "بني بحدل", "البويهي", "هنين", "تيانت", "أولاد ريّاح", "بوحلو", "عين الكبيرة", "شتوان", "المنصورة", "بني خلاد", "وادي الشولي", "عين غرابة"],
+"تيارت":["تيارت", "مدروسة", "عين بوشقيف", "سيدي علي ملال", "عين زاريت", "عين الذهب", "سيدي بختي", "مدريسة", "زمالة الأمير عبد القادر", "مدنة", "السبت", "ملاكو", "دحموني", "الرحوية", "المهدية", "السوقر", "سيدي عبد الرحمن", "توسنينة", "فرندة", "عين كرمس", "قصر الشلالة", "الرشايقة", "النادورة", "تاقدمت", "وادي ليلي", "مشرع الصفا", "حمادية", "شحيمة", "تخمرت", "سيدي الحسني", "جيلالي بن عمار", "السبعين", "تيدة", "نعيمة", "مغيلة", "قرطوفة", "عين الحديد", "الفايجة", "سي عبد الغني", "بوقرة", "سرغين"],
+"تيزي وزو":["تيزي وزو", "عين الحمام", "أقبيل", "فريحة", "سوامع", "مشطراس", "إيرجن", "تيميزارت", "ماكودة", "ذراع الميزان", "تيزي غنيف", "بونوح", "آيت شافع", "فريقات", "بني عيسي", "بني زمنزر", "إيفرحونن", "عزازقة", "إيلولة أومالو", "ياكوران", "الأربعاء نايت إراثن", "تيزي راشد", "زكري", "واقنون", "عين الزاوية", "مقيرة", "آيت يحيى", "آيت محمود", "معاتقة", "آيت بومهدي", "أبي يوسف", "بني دوالة", "إيليلتن", "بوزقن", "آيت عقواشة", "واضية", "أزفون", "تيقزيرت", "آيت عيسى ميمون", "بوغني", "إفيغاء", "آيت أومالو", "ترميتين", "أكرو", "يطافن", "بني زيكي", "ذراع بن خدة", "واسيف", "إجر", "مكلة", "تيزي نتلاتة", "آيت يحيى موسى", "سوق الاثنين", "آيت خليلي", "سيدي نعمان", "إبودرارن", "أغريب", "إفليسن", "بودجيمة", "آيت تودرت", "تادميت", "آيت بوعدو", "بني يني", "أغني قغران"],
+"الجزائر العاصمة":["الجزائر الوسطى", "سيدي أمحمد", "المدنية", "المرادية", "الحامة", "باب الوادي", "بولوغين", "القصبة", "وادي قريش", "بئر مراد رايس", "الأبيار", "بوزريعة", "بير خادم", "الحراش", "براقي", "وادي السمار", "بوروبة", "حسين داي", "القبة", "باش جراح", "الدار البيضاء", "باب الزوار", "بن عكنون", "دالي إبراهيم", "الحمامات", "رايس حميدو", "جسر قسنطينة", "حيدرة", "المحمدية", "برج الكيفان", "المقرية", "بني مسوس", "الأوكاليبتوس", "برتوتة", "تسالة المرجة", "أولاد شبل", "سيدي موسى", "عين طاية", "برج البحري", "المرسى", "الحراوة", "الرويبة", "الرغاية", "عين البنيان", "سطاوالي", "زرالدة", "محالمة", "الرحمانية", "السويدانية", "الشراقة", "أولاد فايت", "العاشور", "درارية", "الدويرة", "بابا حسن", "خرايسية", "السحاولة"],
+"الجلفة":["الجلفة", "مجبارة", "الجديد", "حاسي بحبح", "عين معبد", "سد الرحال", "فيض البطمة", "بيرين", "بويرة الأحداب", "زعفران", "الخميس", "سيدي بايزيد", "مليليحة", "الإدريسية", "الدويس", "حاسي العش", "مسعد", "قطارة", "سيدي لعجال", "حد الصحاري", "القديد", "سلمانة", "عين الشهداء", "أم العظام", "دار الشيوخ", "الشارف", "بني يعقوب", "زكار", "حاسي فدول", "عمورة", "عين وسارة", "بنهار", "تعظميت", "عين الإبل", "عين فقة", "قرنيني"],
+"جيجل":["جيجل", "إراقن سويسي", "العوانة", "زيامة منصورية", "الطاهير", "الأمير عبد القادر", "الشقفة", "الشحنة", "الميلية", "سيدي معروف", "سطارة", "العنصر", "سيدي عبد العزيز", "قاوس", "غبالة", "بوراوي بلهادف", "جيملة", "سلمى بن زيادة", "بوسيف أولاد عسكر", "القنار نشفي", "أولاد يحيى خدروش", "بودريعة بن ياجيس", "كمير وادي عجول", "وجانة", "أولاد رابح", "تاكسنة", "جمعة بني حبيبي", "برج الطهر"],
+"سطيف":["سطيف", "عين الكبيرة", "بني عزيز", "أولاد سيدي أحمد", "بوطالب", "عين الروى", "ذراع قبيلة", "بئر العرش", "بني شعبانة", "أولاد تبان", "الحامة", "معاوية", "عين لقراج", "عين عباسة", "الدهامشة", "بابور", "قجال", "عين الحجر", "بوسلام", "العلمة", "جميلة", "بني ورثيلان", "رصفة", "تالا إيفاسن", "عين أزال", "بيضاء برج", "بوعندس", "بازر سكرة", "حمام السخنة", "مزلوق", "بئر حدادة", "سرج الغول", "حربيل", "الوريسية", "تيزي نبشار", "صالح باي", "عين ولمان", "أولاد عدوان", "بلاعة", "عين أرنات", "عموشة", "عين السبت", "بوقاعة", "بني فودة", "تاشودة", "بني موحلي", "أولاد صابر", "قنزات", "الأولجة", "حمام قرقور", "آيت نوال مزادة", "آيت تيزي", "قلال", "تلة", "ماوكلان", "قلتة زرقاء", "تاية", "بني حسين"],
+"سعيدة":["سعيدة", "دوي ثابت", "عين الحجر", "أولاد خالد", "مولاي العربي", "يوب", "هونت", "سيدي عمر", "سيدي بوبكر", "الحساسنة", "المعمورة", "سيدي أحمد", "عين السخونة", "أولاد إبراهيم", "تيرسين", "عين السلطان"],
+"سكيكدة":["سكيكدة", "عين زويت", "الحدائق", "عزابة", "جندل سعدي محمد", "عين بوزيان", "بكوش لخضر", "بن عزوز", "بني ولبان", "بين الويدان", "بوشطاطة", "الشرايع", "القل", "القدير", "المرسى", "أمجاز الدشيش", "فلفلة", "حمادي كرومة", "قنواع", "القرقرة", "وادي الزهور", "أم الطوب", "أولاد عطية", "أولاد حبابة", "رمضان جمال", "صالح بوالشعور", "سيدي مزغيش", "تمالوس", "زردازة", "زيتونة", "بني زيد", "السبت", "عين شرشار", "عين قشرة", "الحروش", "خناق مايو", "بني بشير"],
+"سيدي بلعباس":["سيدي بلعباس", "تسالة", "سيدي إبراهيم", "مصطفى بن إبراهيم", "تلاغ", "مزاورو", "بوخنافس", "سيدي علي بوسيدي", "بدر الدين المقراني", "مرحوم", "تفسور", "عمرناس", "تلموني", "سيدي لحسن", "رأس الماء", "عين ثريد", "سيدي يعقوب", "سفيزف", "تنيرة", "مرين", "سيدي دحو الزاير", "عين البرد", "سيدي علي بن يوب", "بن عشيبة شلية", "حاسي زهانة", "عين تندمين", "وادي السفيون", "تغاليمت", "حاسي دحو", "سهالة ثورة", "سيدي شعيب", "وادي سبع", "لعمتر", "تاودموت", "الضاية", "بلعربي", "بن باديس", "رجم دموش", "زروالة", "شتوان بلايلة", "بوجبع البرج", "مكدرة", "سيدي حمادوش", "عين عدان", "طابية", "مولاي سليسن", "وادي تاوريرة", "سيدي خالد", "عين قادة", "بير الحمام", "الحصيبة"],
+"عنابة":["عنابة", "برحال", "الحجار", "العلمة", "البوني", "وادي العنب", "الشرفة", "سرايدي", "عين الباردة", "الشطايبي", "سيدي عمار", "التريعات"],
+"قالمة":["قالمة", "النشماية", "بوعاتي محمود", "وادي الزناتي", "تاملوكة", "وادي فراغة", "عين صندل", "رأس العقبة", "الدهوارة", "بلخير", "بن جراح", "بوحمدان", "عين مخلوف", "عين بن بيضاء", "خزارة", "بني مزلين", "بوحشانة", "قلعة بوصبع", "حمام دباغ", "الفجوج", "برج صباط", "حمام النبايل", "هيليوبوليس", "هواري بومدين", "الركنية", "سلاوة عنونة", "مجاز عمار", "مجاز الصفا", "بومهرة أحمد", "عين رقادة", "وادي الشحم", "جبالة الخميسي", "عين العربي"],
+"قسنطينة":["قسنطينة", "حامة بوزيان", "ابن زياد", "ديدوش مراد", "الخروب", "عين عبيد", "بني حميدان", "أولاد رحمون", "عين السمارة", "مسعود بوجريو", "زيغود يوسف", "ابن باديس"],
+"المدية":["المدية", "وزرة", "أولاد معرف", "عين بوسيف", "العيساوية", "أولاد دايد", "العمارية", "دراق", "القلب الكبير", "بوعيش", "مزغنة", "أولاد إبراهيم", "دامياط", "سيدي زيان", "تمزقيدة", "الحمدانية", "كاف الأخضر", "شلالة العذاورة", "بوسكن", "الربعية", "بوشراحيل", "أولاد هلال", "بني سليمان", "البرواقية", "سغوان", "مفتاحة", "أولاد عنتر", "بوقزول", "تابلاط", "الحوض", "ذراع السمار", "سيدي دامد", "عين أوكسير", "زوبيرية", "سواقي", "سيدي نعمان", "قصر البخاري", "العزيزية", "حناشة", "تلاطة الدوائر", "عزيز", "بعطة", "بوغار", "سيدي ربيع", "وامري", "ميهوب", "شنيقل", "أم الجليل", "أولاد بوعشرة", "سانق", "سدراية", "سي المحجوب", "سيدي زاهر", "تفراوت", "الشهبونية", "بير بن عابد", "خمس جوامع", "بوعيشون"],
+"مستغانم":["مستغانم", "سيدي علي", "عبد المالك رمضان", "حجاج", "نقمارية", "سيدي لخضر", "عشعاشة", "خضرة", "بوقيراط", "سيرات", "عين سيدي الشريف", "مسرة", "المنصورة", "سوافلية", "أولاد بوغالم", "أولاد معلة", "مزغران", "عين بودينار", "تازقايت", "صيادة", "فرناقة", "ستيدية", "عين النويصي", "حاسي ماماش", "عين تادلس", "سور", "وادي الخير", "صفصاف", "الحاسيان", "تواهرية", "خير الدين", "سيدي بلعطار"],
+"المسيلة":["المسيلة", "المعاضيد", "حمام الضلعة", "أولاد دراج", "ترمونت", "مطارفة", "خطوطي سد الجير", "سيدي عيسى", "عين الحجل", "سيدي هجرس", "برهوم", "بن سرور", "أولاد عدي لقبالة", "بوطي السايح", "خبانة", "أولاد منصور", "أولاد سيدي إبراهيم", "سيدي امحمد", "بلعيبة", "سيدي عامر", "تامسة", "بن داود", "الهوامد", "ونوغة", "الشلال", "أولاد سليمان", "جبل مساعد", "بئر فضة", "سليم", "زرزور", "عين فارس", "عين الخضراء", "مقرة", "الحامل", "محمد بوضياف", "الدهاهنة", "عين الملح", "سوامع", "أولتام", "عين الريش", "معاريف", "أولاد ماضي", "وادي الشعير", "بني يلمان", "مسيف"],
+"معسكر":["معسكر", "بوحنيفية", "تيزي", "حسين", "ماوسة", "تغنيف", "الهاشم", "سيدي قادة", "زلامطة", "وادي الأبطال", "عين فراح", "غريس", "فروحة", "ماتمور", "مقظع", "سيدي بوسعيد", "البرج", "عين فكان", "بنيان", "خلوية", "المنور", "وادي تاغية", "عوف", "عين فارس", "سيق", "وقاز", "العليمية", "القعدة", "زهانة", "المحمدية", "سيدي عبد المؤمن", "فراقيق", "الغمري", "سجرارة", "مقطع دوز", "بوهني", "قطنة", "المأمونية", "القرط", "غروس", "غرجوم", "الشرفة", "رأس عين عميروش", "نسمط", "سيدي عبد الجبار"],
+"ورقلة":["ورقلة", "عين البيضاء", "حاسي بن عبد الله", "حاسي مسعود", "انقوسة", "الرويسات", "سيدي خويلد", "البرمة"],
+"وهران":["وهران", "قديل", "بئر الجير", "حاسي بونيف", "السانية", "أرزيو", "بطيوة", "مرسى الحجاج", "عين الترك", "العنصر", "وادي تليلات", "طفراوي", "سيدي الشحمي", "بوفاطيس", "مرسى الكبير", "بوسفر", "الكرمة", "البراية", "حاسي بن عقبة", "بن فريحة", "حاسي مفسوخ", "سيدي بن يبقى", "مسرغين", "بوتليليس", "عين الكرمة", "عين البية"],
+"البيض":["البيض", "رقاصة", "ستيتن", "بريزينة", "الغاسول", "بوعلام", "الأبيض سيدي الشيخ", "عين العراك", "الأربعاوات", "بوقطب", "الخيثر", "كاف الأحمر", "بوسمغون", "الشلالة", "كراكدة", "البنود", "الشقيق", "سيدي سليمان", "سيدي طيفور", "سيدي عامر", "توسمولين", "المهارة"],
+"إليزي":["إليزي", "برج عمر إدريس", "دبداب", "إن أميناس"],
+"برج بوعريريج":["برج بوعريريج", "رأس الوادي", "برج زمورة", "المنصورة", "المهير", "بن داود", "العاشير", "عين تاغروت", "برج الغدير", "سيدي مبارك", "برارات", "خليل", "غيلاسة", "حسناوة", "تفرق", "جعافرة", "الحمادية", "مجانة", "تيكستر", "أولاد سيدي إبراهيم", "تسامرت", "ثنية النصر", "كولا", "بليمور", "أولاد دحمان", "عين تسرة", "تقلعيت", "الرابطة", "حرازة", "القصور", "بئر قصد علي", "الماين", "تاسميرت", "أولاد براهم"],
+"بومرداس":["بومرداس", "بودواو", "عفير", "برج منايل", "بغلية", "سيدي داود", "الناصرية", "جنات", "يسر", "زموري", "سي مصطفى", "تيجلابين", "شعبة العامر", "ثنية", "عمال", "بني عمران", "سوق الحد", "بودواو البحري", "أولاد موسى", "أولاد هداج", "بوزقزة قدارة", "خميس الخشنة", "الخروبة", "الأربعطاش", "حمادي", "قورصو", "تاورقة", "دلس", "بن شود", "لقاطة", "أولاد عيسى", "قدارة"],
+"الطارف":["الطارف", "بوحجار", "بن مهيدي", "بوقوس", "القالة", "عين العسل", "العيون", "بوثلجة", "السوارخ", "البريحان", "بحيرة الطيور", "الشافية", "الذرعان", "الشحاني", "الشط", "زريزر", "زيتونة", "عين الكرمة", "وادي الزيتون", "حمام بني صالح", "رمل السوق", "عصفور", "بسباس"],
+"تندوف":["تندوف", "أم العسل"],
+"تيسمسيلت":["تيسمسيلت", "برج بونعامة", "ثنية الحد", "الأزهرية", "بني شعيب", "الأرجم", "ملعب", "سيدي لنتري", "برج الأمير عبد القادر", "العيون", "خميستي", "أولاد بسام", "عماري", "اليوسفية", "سيدي سليمان", "سيدي عابد", "تاملحت", "بوقايد", "بني لحسن", "ماسم", "سيدي بوتشنت"],
+"الوادي":["الوادي", "الرباح", "وادي العلندة", "البياضة", "النخلة", "قمار", "الكوينين", "الرقيبة", "الحمراية", "تاغزوت", "الدبيلة", "حساني عبد الكريم", "حاسي خليفة", "الطالب العربي", "دوار الماء", "سيدي عون", "الطريفاوي", "المقرن", "بني قشة", "أورماس", "ميه ونسة", "العقلة"],
+"خنشلة":["خنشلة", "المتوسة", "قايس", "بغاي", "الحامة", "عين الطويلة", "تاوزيانت", "بوحمامة", "المحمل", "أولاد رشاش", "بابار", "الرميلة", "شلية", "ششار", "يابوس", "خيران", "تامزة", "أنسيغة", "جلال", "مسارة"],
+"سوق أهراس":["سوق أهراس", "سدراتة", "الحنانشة", "مشروحة", "أولاد إدريس", "تيفاش", "الزعرورية", "تاورة", "الدريعة", "الحدادة", "الخضارة", "المراهنة", "أولاد مومن", "بئر بوحوش", "مداوروش", "أم العظائم", "عين الزانة", "عين السلطان", "ويلان", "سيدي فرج", "سافل الويدان", "ترقالت", "الزوابي", "خميسة", "وادي الكبريت"],
+"تيبازة":["تيبازة", "مناصر", "الأرهاط", "دواودة", "بورقيقة", "خميستي", "أغبال", "حجوط", "سيدي عمار", "القوراية", "ناظور", "الشعيبة", "عين تاقورايت", "شرشال", "الداموس", "مراد", "فوكة", "بوإسماعيل", "أحمر العين", "بوهارون", "سيدي غيلاس", "مسلمون", "سيدي راشد", "القليعة", "الاطاطبة", "سيدي سميان", "بني ميلك", "حجرة النص"],
+"ميلة":["ميلة", "فرجيوة", "شلغوم العيد", "وادي العثمانية", "عين ملوك", "التلاغمة", "تاجنانت", "بن يحيى عبد الرحمن", "وادي السقان", "القرارم قوقة", "سيدي مروان", "تسادان حدادة", "دراجي بوصلاح", "مينار زارزة", "أميرة أرقة", "ترعي باينان", "حمالة", "عين التين", "المشيرة", "سيدي خليفة", "زغاية", "أحمد راشدي", "وادي النجاء", "عين البيضاء حريش", "بوحاتم", "الرواشد", "تيبرقنت", "يحيى بني قشة", "شيقارة", "أولاد خلوف"],
+"عين الدفلى":["عين الدفلى", "مليانة", "بومدفع", "خميس مليانة", "حمام ريغة", "عريب", "جليدة", "العامرة", "بورشد", "العطاف", "العبادية", "جندل", "وادي الشرفاء", "عين الأشياخ", "وادي الجمعة", "روينة", "زدين", "الحسانية", "بئر ولد خليفة", "عين السلطان", "طارق بن زياد", "برج الأمير خالد", "عين التركي", "سيدي لخضر", "بن علال", "عين البنيان", "الحسينية", "بربوش", "جمعة أولاد الشيخ", "المخاطرية", "بطحية", "تاشتة زقاغة", "عين بويحيى", "الماين", "تبركانين", "بلعاص"],
+"النعامة":["النعامة", "المشرية", "عين الصفراء", "تيوت", "صفيصيفة", "مغرار", "عسلة", "جنين بورزق", "عين بن خليل", "مكمن بن عامر", "قصدير", "البيوض"],
+"عين تموشنت":["عين تموشنت", "شعبة اللحم", "عين الكيحل", "حمام بوحجر", "بوزجار", "وادي برقش", "أغلال", "تارقة", "عين الأربعاء", "تامزورة", "شنتوف", "سيدي بن عدة", "العوابلية", "المالح", "سيدي صافي", "ولهاصة الغرابة", "تادمايا", "الأمير عبد القادر", "العامرية", "حاسي الغلة", "الحساسنة", "أولاد بوجمعة", "أولاد الكيحل", "بني صاف", "سيدي أورياش", "المسيد", "عين طلبة"],
+"غرداية":["غرداية", "ضاية بن ضحوة", "بريان", "متليلي", "القرارة", "العطف", "زلفانة", "سبسب", "بونورة", "المنصورة"],
+"غليزان":["غليزان", "وادي رهيو", "مازونة", "الرمكة", "يلل", "سيدي امحمد بن علي", "زمورة", "وادي الجمعة", "بني زنطيس", "منداس", "سيدي خطاب", "عين طارق", "حمري", "دار بن عبد الله", "وريزان", "مديونة", "عمي موسى", "القلعة", "القطار", "مرجة سيدي عابد", "بلعسل بوزقزة", "الحمادنة", "وادي السلام", "لحلاف", "سيدي سعادة", "عين رحمة", "سيدي لزرق", "جديوية", "المطمر", "سوق الحد", "بن داود", "حد الشكالة", "بني درقون", "سيدي امحمد بن عودة", "أولاد سيدي ميهوب", "أولاد عيش"],
+"تيميمون":["تيميمون", "أولاد السعيد", "أولاد عيسى", "شروين", "تالمين", "أوقروت", "دلدول", "المطارفة", "تينركوك", "قصر قدور"],
+"برج باجي مختار":["برج باجي مختار", "تيمياوين"],
+"أولاد جلال":["أولاد جلال", "سيدي خالد", "بسباس", "الدوسن", "رأس الميعاد", "الشعيبة"],
+"بني عباس":["بني عباس", "تمترت", "إقلي", "الوطى", "كرزاز", "أولاد خضير", "تيمودي", "بني يخلف", "القصابي", "تبلبالة"],
+"عين صالح":["عين صالح", "فقارة الزوى", "عين غار"],
+"عين قزام":["عين قزام", "تين زواتين"],
+"تقرت":["تقرت", "النزلة", "تبسبست", "الزاوية العابدية", "المقارين", "سيدي سليمان", "العالية", "الحجيرة", "الطيبات", "تماسين", "بلدة عمر", "بن ناصر"],
+"جانت":["جانت", "برج الحواس"],
+"المغير":["المغير", "سيدي خليل", "ستيل", "أم الطيور", "جامعة", "مرارة", "تندلة", "سيدي عمران"],
+"المنيعة":["المنيعة", "حاسي القارة", "حاسي الفحل"]
+};
+
+const wilayaSelect = document.getElementById('fWilaya');
+const communeInput = document.getElementById('fCommune');
+Object.keys(WILAYAS).forEach((w,i)=>{
+  const opt = document.createElement('option'); opt.value = w;
+  opt.textContent = String(i+1).padStart(2,'0') + ' - ' + w;
+  wilayaSelect.appendChild(opt);
+});
+wilayaSelect.addEventListener('change', ()=>{
+  const w = wilayaSelect.value;
+  communeInput.innerHTML = '';
+  if(!w){
+    communeInput.disabled = true;
+    communeInput.innerHTML = '<option value="">اختر الولاية أولاً</option>';
+    return;
+  }
+  communeInput.disabled = false;
+  const first = document.createElement('option'); first.value = ''; first.textContent = '-- اختر البلدية --';
+  communeInput.appendChild(first);
+  WILAYAS[w].forEach(c=>{ const opt = document.createElement('option'); opt.value = c; opt.textContent = c; communeInput.appendChild(opt); });
+});
+
+let qty = 1;
+const qtyVal = document.getElementById('qtyVal');
+document.getElementById('qtyMinus').onclick = ()=>{ if(qty>1){qty--; qtyVal.textContent=qty;} };
+document.getElementById('qtyPlus').onclick = ()=>{ qty++; qtyVal.textContent=qty; };
+
+document.getElementById('toConfirm').onclick = ()=>{
+  const name = document.getElementById('fName').value.trim();
+  const phone = document.getElementById('fPhone').value.trim();
+  const wilaya = wilayaSelect.value;
+  const commune = communeInput.value.trim();
+  const address = document.getElementById('fAddress').value.trim();
+  if(!name || !phone || !wilaya || !commune || !address){
+    alert('عمر جميع الخانات باش نقدر نأكد الطلبية.'); return;
+  }
+  const p = PRODUCTS[currentProduct];
+  const total = p.price * qty;
+  document.getElementById('sProd').textContent = p.name;
+  document.getElementById('sName').textContent = name;
+  document.getElementById('sPhone').textContent = phone;
+  document.getElementById('sWilaya').textContent = wilaya;
+  document.getElementById('sCommune').textContent = commune;
+  document.getElementById('sAddress').textContent = address;
+  document.getElementById('sQty').textContent = qty;
+  document.getElementById('sTotal').textContent = total.toLocaleString('en-US');
+  document.getElementById('orderStep1').classList.add('hidden');
+  document.getElementById('orderStep2').classList.remove('hidden');
+};
+document.getElementById('backEdit').onclick = ()=>{
+  document.getElementById('orderStep2').classList.add('hidden');
+  document.getElementById('orderStep1').classList.remove('hidden');
+};
+document.getElementById('sendWhatsapp').onclick = ()=>{
+  const msg =
+`طلبية جديدة من Klik Store ✅
+المنتج: ${document.getElementById('sProd').textContent}
+الكمية: ${document.getElementById('sQty').textContent}
+الاسم: ${document.getElementById('sName').textContent}
+الهاتف: ${document.getElementById('sPhone').textContent}
+الولاية: ${document.getElementById('sWilaya').textContent}
+البلدية: ${document.getElementById('sCommune').textContent}
+العنوان: ${document.getElementById('sAddress').textContent}
+المجموع: ${document.getElementById('sTotal').textContent} دج`;
+  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+};
+
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); observer.unobserve(e.target); } });
+}, { threshold: 0.15 });
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>
