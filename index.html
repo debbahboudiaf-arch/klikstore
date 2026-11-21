@@ -1397,29 +1397,21 @@
         const submitBtn = $("#order-submit-btn");
         submitBtn.disabled = true;
         $("#order-submit-text").textContent = "جاري إرسال الطلب...";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzMQtqjwVrbb2p4famMZc9tXQ5XDV1YP1Rv9sQFoTKyU3aP-fnLCkS2lyE3aMAbP7UPIw/exec";
 
-        try {
-          const formData = new URLSearchParams();
-          Object.keys(payload).forEach(key => {
-            formData.append(key, payload[key]);
-          });
+const response = await fetch(GOOGLE_SCRIPT_URL, {
+  method: "POST",
+  headers: {
+    "Content-Type": "text/plain;charset=utf-8"
+  },
+  body: JSON.stringify(payload)
+});
 
-          const response = await fetch(GOOGLE_SCRIPT_URL, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded"
-            },
-            body: formData.toString()
-          });
+if (!response.ok) {
+  throw new Error("حدث خطأ في الاتصال بالخادم (" + response.status + ")");
+}
 
-          if (!response.ok) {
-            throw new Error("حدث خطأ في الاتصال بالخادم (" + response.status + ")");
-          }
-
-          const data = await response.json();
-
-          if (data && (data.status === "success" || data.result === "success" || data.status === "ok" || data.success === true)) {
-            // Confirmed save -> Show simple receipt message (No total price, No item breakdown)
+const data = await response.json();
             $("#order-form").hidden = true;
             $("#receipt").hidden = false;
             $("#receipt-status-banner").className = "receipt-status-banner is-verified";
