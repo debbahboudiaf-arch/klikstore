@@ -1404,44 +1404,18 @@
             formData.append(key, payload[key]);
           });
 
-          const response = await fetch(GOOGLE_SCRIPT_URL, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded"
-            },
-            body: formData.toString()
-          });
+         await fetch(GOOGLE_SCRIPT_URL, {
+  method: "POST",
+  mode: "no-cors",
+  headers: {
+    "Content-Type": "application/x-www-form-urlencoded"
+  },
+  body: formData.toString()
+});
 
-          if (!response.ok) {
-            throw new Error("حدث خطأ في الاتصال بالخادم (" + response.status + ")");
-          }
-
-          const data = await response.json();
-
-          if (data && (data.status === "success" || data.result === "success" || data.status === "ok" || data.success === true)) {
-            // Confirmed save -> Show simple receipt message (No total price, No item breakdown)
-            $("#order-form").hidden = true;
-            $("#receipt").hidden = false;
-            $("#receipt-status-banner").className = "receipt-status-banner is-verified";
-            $("#status-ico-wrap").innerHTML = '<svg class="ico"><use href="#check"/></svg>';
-            $("#receipt-headline").textContent = "تم استلام الطلب";
-            $("#receipt-subtext").textContent = "تم حفظ طلبك بنجاح. سيتصل بك فريقنا هاتفياً لتأكيد العنوان وتجهيز الشحنة.";
-
-            if (!purchaseTrackedForOrder) {
-              track("Purchase", { value: grandTotal, currency: "DZD" });
-              purchaseTrackedForOrder = true;
-            }
-          } else if (data && data.status === "error") {
-            throw new Error(data.message || "لم يتم تأكيد حفظ الطلب في النظام.");
-          } else {
-            // Fallback for valid server response
-            $("#order-form").hidden = true;
-            $("#receipt").hidden = false;
-            $("#receipt-status-banner").className = "receipt-status-banner is-verified";
-            $("#status-ico-wrap").innerHTML = '<svg class="ico"><use href="#check"/></svg>';
-            $("#receipt-headline").textContent = "تم استلام الطلب";
-            $("#receipt-subtext").textContent = "تم حفظ طلبك بنجاح. سيتصل بك فريقنا هاتفياً لتأكيد العنوان وتجهيز الشحنة.";
-          }
+$("#order-form").hidden = true;
+$("#receipt").textContent = "تم استلام طلبك";
+$("#receipt").hidden = false; 
         } catch (err) {
           console.error("Submission error:", err);
           alert("تعذر إرسال الطلب: " + (err.message || "يرجى التثبت من الاتصال والمحاولة مرة أخرى."));
